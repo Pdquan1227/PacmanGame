@@ -29,11 +29,17 @@ public class Board extends JPanel implements ActionListener {
 	private final Color dotColor = new Color(255, 237, 0);
 	private Color mazeColor;
 
+	// Indicate if the game is finished
+	private boolean winner = false;
+	
 	// Indicate level currently played
 	private int level = 1;
 
 	// Check if is in game
 	private boolean inGame = false;
+
+	// Check if 0 lives left
+	private boolean noLives = false;
 
 	// Check if Pacman dies or not
 	private boolean dying = false;
@@ -91,8 +97,7 @@ public class Board extends JPanel implements ActionListener {
 	private int req_dx, req_dy, view_dx, view_dy;
 
 	// 0 = block; 1 = left border; 2 = top border; 4 = right border; 8 = bottom
-	// border; 16 = white dot
-	// 225 value;
+	// border; 16 = dot
 	// each number is sum of all element
 	// levelData represent level
 	// Draw the level
@@ -173,7 +178,7 @@ public class Board extends JPanel implements ActionListener {
 			22, 0, 0, 21, 0, 21, 0, 21, 21, 0, 21, 0, 17, 26, 26, 28, 0, 17, 26, 22, 0, 23, 0, 23, 0, 19, 26, 20, 0, 25,
 			26, 26, 20, 0, 21, 0, 21, 25, 26, 16, 26, 20, 0, 0, 0, 0, 21, 0, 17, 26, 16, 18, 16, 26, 20, 0, 21, 0, 0, 0,
 			0, 17, 26, 16, 26, 28, 0, 0, 21, 0, 25, 26, 26, 22, 0, 21, 0, 21, 0, 25, 16, 28, 0, 21, 0, 21, 0, 19, 26,
-			26, 28, 0, 21, 0, 0, 0, 0, 21, 0, 0, 0, 0, 25, 18, 28, 0, 21, 0, 0, 13, 0, 0, 21, 0, 25, 18, 28, 0, 0, 0, 0,
+			26, 28, 0, 21, 0, 0, 0, 0, 21, 0, 0, 0, 0, 25, 18, 28, 0, 21, 0, 0, 29, 0, 0, 21, 0, 25, 18, 28, 0, 0, 0, 0,
 			17, 26, 22, 0, 0, 21, 0, 27, 22, 0, 0, 29, 0, 0, 17, 26, 30, 0, 27, 26, 20, 0, 0, 29, 0, 0, 19, 30, 0, 21,
 			0, 21, 19, 26, 20, 0, 0, 25, 22, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 19, 28, 0, 0, 21, 0, 21, 21,
 			0, 25, 22, 0, 0, 25, 26, 26, 26, 26, 24, 26, 26, 26, 26, 26, 24, 26, 26, 26, 26, 28, 0, 0, 19, 28, 0, 21,
@@ -317,83 +322,147 @@ public class Board extends JPanel implements ActionListener {
 	}
 
 	private void showIntroScreen(Graphics2D g2d) {
-		switch (level) {
-		case 1:
-			// Border
-			g2d.setColor(new Color(0, 32, 48));
-			g2d.fillRect(50, scr_size / 2 - 30, scr_size - 100, 50);
-			g2d.setColor(dotColor);
-			g2d.drawRect(50, scr_size / 2 - 30, scr_size - 100, 50);
 
-			// This link with key press to start the game
-			String s1 = "Press [Enter] to start .";
-			Font small1 = new Font("Helvetica", Font.BOLD, 14);
-			FontMetrics metr1 = this.getFontMetrics(small1);
-			
-			g2d.setFont(small1);
-			g2d.drawString(s1, (scr_size - metr1.stringWidth(s1)) / 2, scr_size / 2);
-			break;
-		case 2:
-			g2d.setColor(new Color(0, 32, 48));
-			g2d.fillRect(50, scr_size / 2 - 30, scr_size - 100, 50);
-			g2d.setColor(dotColor);
-			g2d.drawRect(50, scr_size / 2 - 30, scr_size - 100, 50);
+		// Border
+		g2d.setColor(new Color(0, 32, 48));
+		g2d.fillRect(50, scr_size / 4 - 10, scr_size - 100, 380);
+		g2d.setColor(dotColor);
+		g2d.drawRect(50, scr_size / 4 - 10, scr_size - 100, 380);
+		g2d.drawLine(50, 510, 645, 510);
 
-			// This link with key press to start the game
-			String s2 = "Press [Enter] to start .";
-			Font small2 = new Font("Helvetica", Font.BOLD, 14);
-			FontMetrics metr2 = this.getFontMetrics(small2);
+		Font font1 = new Font("Helvetica", Font.BOLD, 14);
 
-			g2d.setFont(small2);
-			g2d.drawString(s2, (scr_size - metr2.stringWidth(s2)) / 2, scr_size / 2);
-			break;
-		case 3:
-			g2d.setColor(new Color(0, 32, 48));
-			g2d.fillRect(50, scr_size / 2 - 30, scr_size - 100, 50);
-			g2d.setColor(dotColor);
-			g2d.drawRect(50, scr_size / 2 - 30, scr_size - 100, 50);
+		// Instruction menu
+		String m = "Instruction:";
+		String m1 = "Up";
+		String m2 = "Down";
+		String m3 = "Left";
+		String m4 = "Right";
+		String m5 = "Restart";
+		String m5_1 = "Esc";
+		String m6 = "Pause/Resume";
+		String m6_1 = "Spacebar";
 
-			// This link with key press to start the game
-			String s3 = "Press [Enter] to start .";
-			Font small3 = new Font("Helvetica", Font.BOLD, 14);
-			FontMetrics metr3 = this.getFontMetrics(small3);
+		g2d.drawString(m, 60, 185);
 
-			g2d.setFont(small3);
-			g2d.drawString(s3, (scr_size - metr3.stringWidth(s3)) / 2, scr_size / 2);
-			break;
-		case 4:
-			g2d.setColor(new Color(0, 32, 48));
-			g2d.fillRect(50, scr_size / 2 - 30, scr_size - 100, 50);
-			g2d.setColor(dotColor);
-			g2d.drawRect(50, scr_size / 2 - 30, scr_size - 100, 50);
+		// Up key
+		g2d.drawRect(200, 250, 35, 35);
+		g2d.drawLine(218, 260, 218, 275);
+		g2d.drawLine(218, 260, 222, 265);
+		g2d.drawLine(218, 260, 214, 265);
+		g2d.drawLine(230, 255, 248, 225);
+		g2d.drawLine(248, 225, 285, 225);
+		g2d.drawString(m1, 290, 230);
 
-			// This link with key press to start the game
-			String s4 = "Press [Enter] to start .";
-			Font small4 = new Font("Helvetica", Font.BOLD, 14);
-			FontMetrics metr4 = this.getFontMetrics(small4);
+		// Down key
+		g2d.drawRect(200, 295, 35, 35);
+		g2d.drawLine(218, 305, 218, 320);
+		g2d.drawLine(218, 320, 222, 315);
+		g2d.drawLine(218, 320, 214, 315);
+		g2d.drawLine(230, 325, 240, 355);
+		g2d.drawLine(240, 355, 285, 355);
+		g2d.drawString(m2, 290, 360);
 
-			g2d.setFont(small4);
-			g2d.drawString(s4, (scr_size - metr4.stringWidth(s4)) / 2, scr_size / 2);
-			break;
+		// Left key
+		g2d.drawRect(155, 295, 35, 35);
+		g2d.drawLine(165, 313, 180, 313);
+		g2d.drawLine(165, 313, 170, 309);
+		g2d.drawLine(165, 313, 170, 317);
+		g2d.drawLine(160, 300, 140, 265);
+		g2d.drawLine(140, 265, 110, 265);
+		g2d.drawString(m3, 80, 270);
+
+		// Right key
+		g2d.drawRect(245, 295, 35, 35);
+		g2d.drawLine(255, 313, 270, 313);
+		g2d.drawLine(270, 313, 265, 309);
+		g2d.drawLine(270, 313, 265, 317);
+		g2d.drawLine(275, 300, 295, 270);
+		g2d.drawLine(295, 270, 325, 270);
+		g2d.drawString(m4, 330, 275);
+
+		// Escape key
+		g2d.drawRect(440, 275, 35, 35);
+		g2d.drawString(m5_1, 445, 296);
+		g2d.drawLine(470, 280, 490, 250);
+		g2d.drawLine(490, 250, 525, 250);
+		g2d.drawString(m5, 530, 255);
+
+		// Spacebar key
+		g2d.drawRect(110, 400, 331, 35);
+		g2d.drawString(m6_1, 243, 422);
+		g2d.drawLine(276, 430, 300, 460);
+		g2d.drawLine(300, 460, 485, 460);
+		g2d.drawString(m6, 490, 465);
+
+		// This link with key press to start the game
+		String link = "Press [Enter] to start";
+		FontMetrics metr8 = this.getFontMetrics(font1);
+
+		g2d.setFont(font1);
+		g2d.drawString(link, (scr_size - metr8.stringWidth(link)) / 2, 3 * scr_size / 4 + 10);
+	}
+
+	private void showOutroScreen(Graphics2D g2d) {
+		// Border
+		g2d.setColor(new Color(0, 32, 48));
+		g2d.fillRect(50, scr_size / 4 - 10, scr_size - 100, 380);
+		g2d.setColor(dotColor);
+		g2d.drawRect(50, scr_size / 4 - 10, scr_size - 100, 380);
+		g2d.drawLine(50, 510, 645, 510);
+
+		Font font1 = new Font("Helvetica", Font.BOLD, 14);
+		Font font2 = new Font("Helvetica", Font.BOLD, 30);
+		Font font3 = new Font("Helvetica", Font.BOLD, 18);
+
+		String over = "GAME OVER";
+		FontMetrics metr1 = this.getFontMetrics(font2);
+
+		g2d.setFont(font2);
+		g2d.drawString(over, (scr_size - metr1.stringWidth(over)) / 2, 1 * scr_size / 4 + 100);
+
+		String f_score = "Your score: " + score;
+		FontMetrics metr2 = this.getFontMetrics(font3);
+
+		g2d.setFont(font3);
+		g2d.drawString(f_score, (scr_size - metr2.stringWidth(f_score)) / 2, scr_size / 2 - 20);
+
+		String glhf;
+		if(winner) {
+			glhf = "GG! You beat the game!";
+		} else {
+			glhf = "Good luck next time!";
 		}
+		
+		FontMetrics metr3 = this.getFontMetrics(font1);
+		
+		String link = "Press [Enter] to restart";
+		FontMetrics metr4 = this.getFontMetrics(font1);
 
+		g2d.setFont(font1);
+		g2d.drawString(glhf, (scr_size - metr3.stringWidth(glhf)) / 2, 3 * scr_size / 4 - 20);
+		g2d.drawString(link, (scr_size - metr4.stringWidth(link)) / 2, 3 * scr_size / 4 + 10);
 	}
 
 	private void drawScore(Graphics2D g) {
 
 		int i;
 		String s;
+		String lv;
 
 		g.setFont(smallFont);
 		g.setColor(mazeColor);
 		s = "Score: " + score;
+		lv = "Level: " + level;
+		// Current level
+		g.drawString(lv, scr_size / 2 - 28, scr_size + 16);
 
 		// Scoreboard
 		g.drawString(s, 5 * scr_size / 6, scr_size + 16);
 
 		// For drawing lives left
 		for (i = 0; i < lives; i++) {
-			g.drawImage(livesLeft, i * 28 + 8, scr_size + 1, this);
+			g.drawImage(livesLeft, i * 28 + 5, scr_size + 1, this);
 		}
 	}
 
@@ -441,7 +510,7 @@ public class Board extends JPanel implements ActionListener {
 		case 4:
 			if (finished) {
 				score += 1000;
-				
+				winner = true;
 				inGame = false;
 			}
 			break;
@@ -455,6 +524,7 @@ public class Board extends JPanel implements ActionListener {
 
 		if (lives == 0) {
 			inGame = false;
+			noLives = true;
 			g_num = 6;
 			level = 1;
 		} else {
@@ -472,6 +542,7 @@ public class Board extends JPanel implements ActionListener {
 				g_num++;
 				break;
 			case 3:
+
 				if (currentSpeed <= 6) {
 					speedIn++;
 				}
@@ -942,7 +1013,11 @@ public class Board extends JPanel implements ActionListener {
 		if (inGame) {
 			playGame(g2d);
 		} else {
-			showIntroScreen(g2d);
+			if (noLives) {
+				showOutroScreen(g2d);
+			} else {
+				showIntroScreen(g2d);
+			}
 		}
 		g2d.drawImage(ii, 5, 5, this);
 		Toolkit.getDefaultToolkit().sync();
@@ -998,11 +1073,11 @@ public class Board extends JPanel implements ActionListener {
 				// input key to start the game
 				// Initial key: Enter
 				if (key == KeyEvent.VK_ENTER) {
+					noLives = false;
 					inGame = true;
 					initGame();
 				}
 			}
 		}
 	}
-
 }
