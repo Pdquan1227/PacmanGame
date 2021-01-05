@@ -14,7 +14,7 @@ public class Game extends JFrame {
 	private void initUI1() {
 		Board board = new Board();
 		add(board);
-		setTitle("Pacman");
+		setTitle("Pacman - Limited Edition !");
 		setSize(709, 756);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
